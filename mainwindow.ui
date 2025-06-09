@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>MainWindow</class>
+  <widget class="QMainWindow" name="MainWindow">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1400</width>
+        <height>900</height>
+      </rect>
+    </property>
+    <property name="windowTitle">
+      <string>Gestion des Matériels</string>
+    </property>
+    <widget class="QWidget" name="centralwidget">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+
+        <!-- Left Navigation Panel -->
+        <item>
+          <widget class="QWidget" name="navPanel">
+            <property name="minimumWidth">
+              <number>180</number>
+            </property>
+            <property name="styleSheet">
+              <string>background: #343a40;</string>
+            </property>
+            <layout class="QVBoxLayout" name="navLayout">
+              <item>
+                <widget class="QPushButton" name="navMaterialsBtn">
+                  <property name="text">
+                    <string>Matériels</string>
+                  </property>
+                </widget>
+              </item>
+              <item>
+                <widget class="QPushButton" name="navClientsBtn">
+                  <property name="text">
+                    <string>Clients</string>
+                  </property>
+                </widget>
+              </item>
+              <item>
+                <widget class="QPushButton" name="navProjectsBtn">
+                  <property name="text">
+                    <string>Projets</string>
+                  </property>
+                </widget>
+              </item>
+              <item>
+                <widget class="QPushButton" name="navInvoicesBtn">
+                  <property name="text">
+                    <string>Factures</string>
+                  </property>
+                </widget>
+              </item>
+              <item>
+                <widget class="QPushButton" name="navTasksBtn">
+                  <property name="text">
+                    <string>Tâches</string>
+                  </property>
+                </widget>
+              </item>
+              <item>
+                <spacer name="verticalSpacer">
+                  <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                    <size>
+                      <width>20</width>
+                      <height>40</height>
+                    </size>
+                  </property>
+                </spacer>
+              </item>
+            </layout>
+          </widget>
+        </item>
+
+        <!-- Main Content Area -->
+        <item>
+          <widget class="QScrollArea" name="scrollArea">
+            <property name="widgetResizable">
+              <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="scrollContent">
+              <property name="geometry">
+                <rect>
+                  <x>0</x>
+                  <y>0</y>
+                  <width>1198</width>
+                  <height>878</height>
+                </rect>
+              </property>
+              <layout class="QVBoxLayout" name="mainLayout">
+
+                <!-- Materials Table Group -->
+                <item>
+                  <widget class="QGroupBox" name="materialsGroup">
+                    <property name="title">
+                      <string>Liste des Matériels</string>
+                    </property>
+                    <layout class="QVBoxLayout" name="materialsLayout">
+                      <item>
+                        <layout class="QHBoxLayout" name="searchLayout">
+                          <item>
+                            <widget class="QLineEdit" name="searchInput">
+                              <property name="placeholderText">
+                                <string>Rechercher...</string>
+                              </property>
+                            </widget>
+                          </item>
+                          <item>
+                            <widget class="QPushButton" name="searchBtn">
+                              <property name="text">
+                                <string>Rechercher</string>
+                              </property>
+                            </widget>
+                          </item>
+                        </layout>
+                      </item>
+                      <item>
+                        <layout class="QHBoxLayout" name="actionLayout">
+                          <item>
+                            <widget class="QPushButton" name="addBtn">
+                              <property name="text">
+                                <string>Ajouter</string>
+                              </property>
+                            </widget>
+                          </item>
+                          <item>
+                            <widget class="QPushButton" name="modifyBtn">
+                              <property name="text">
+                                <string>Modifier</string>
+                              </property>
+                            </widget>
+                          </item>
+                          <item>
+                            <widget class="QPushButton" name="deleteBtn">
+                              <property name="text">
+                                <string>Supprimer</string>
+                              </property>
+                            </widget>
+                          </item>
+                          <item>
+                            <widget class="QPushButton" name="exportBtn">
+                              <property name="text">
+                                <string>Exporter</string>
+                              </property>
+                            </widget>
+                          </item>
+                          <item>
+                            <widget class="QPushButton" name="importImageBtn">
+                              <property name="text">
+                                <string>Importer Image</string>
+                              </property>
+                            </widget>
+                          </item>
+                        </layout>
+                      </item>
+                      <item>
+                        <widget class="QTableWidget" name="materialsTable">
+                          <property name="minimumHeight">
+                            <number>400</number>
+                          </property>
+                          <property name="selectionBehavior">
+                            <enum>QAbstractItemView::SelectRows</enum>
+                          </property>
+                        </widget>
+                      </item>
+                    </layout>
+                  </widget>
+                </item>
+
+                <!-- Statistics Group -->
+                <item>
+                  <widget class="QGroupBox" name="statsGroup">
+                    <property name="title">
+                      <string>Statistiques</string>
+                    </property>
+                    <layout class="QVBoxLayout" name="statsLayout"/>
+                  </widget>
+                </item>
+
+                <item>
+                  <spacer name="verticalSpacer">
+                    <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                      <size>
+                        <width>20</width>
+                        <height>40</height>
+                      </size>
+                    </property>
+                  </spacer>
+                </item>
+              </layout>
+            </widget>
+          </widget>
+        </item>
+      </layout>
+    </widget>
+  </widget>
+  <resources/>
+</ui>
