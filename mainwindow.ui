@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>MainWindow</class>
+  <widget class="QMainWindow" name="MainWindow">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1400</width>
+        <height>900</height>
+      </rect>
+    </property>
+    <property name="windowTitle">
+      <string>Task Management System</string>
+    </property>
+    <widget class="QWidget" name="centralwidget">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+
+        <!-- Left Navigation Panel (150px width) -->
+        <item>
+          <widget class="QWidget" name="navPanel">
+            <property name="minimumWidth">
+              <number>150</number>
+            </property>
+            <property name="maximumWidth">
+              <number>150</number>
+            </property>
+            <property name="styleSheet">
+              <string>background: #343a40;</string>
+            </property>
+            <layout class="QVBoxLayout" name="navLayout">
+              <item><widget class="QPushButton" name="navTasksBtn"><property name="text"><string>Tasks</string></property></widget></item>
+              <item><widget class="QPushButton" name="navCalendarBtn"><property name="text"><string>Calendar</string></property></widget></item>
+              <item><widget class="QPushButton" name="navStatsBtn"><property name="text"><string>Statistics</string></property></widget></item>
+              <item><spacer name="verticalSpacer"/></item>
+            </layout>
+          </widget>
+        </item>
+
+        <!-- Right Main Content Area -->
+        <item>
+          <widget class="QWidget" name="rightPanel">
+            <layout class="QVBoxLayout">
+
+              <!-- Search Bar -->
+              <item>
+                <layout class="QHBoxLayout">
+                  <item><widget class="QLineEdit" name="searchInput"><property name="placeholderText"><string>Search tasks by ID or name...</string></property></widget></item>
+                  <item><widget class="QPushButton" name="searchBtn"><property name="text"><string>Search</string></property></widget></item>
+                </layout>
+              </item>
+
+              <!-- Action Buttons -->
+              <item>
+                <layout class="QHBoxLayout">
+                  <item><widget class="QPushButton" name="addBtn"><property name="text"><string>Add</string></property></widget></item>
+                  <item><widget class="QPushButton" name="sortBtn"><property name="text"><string>Sort</string></property></widget></item>
+                  <item><widget class="QPushButton" name="modifyBtn"><property name="text"><string>Edit</string></property></widget></item>
+                  <item><widget class="QPushButton" name="deleteBtn"><property name="text"><string>Delete</string></property></widget></item>
+                  <item><widget class="QPushButton" name="exportBtn"><property name="text"><string>Export</string></property></widget></item>
+                </layout>
+              </item>
+
+              <!-- Task Table (Main Content) -->
+              <item>
+                <widget class="QTableWidget" name="taskTable">
+                  <property name="minimumHeight">
+                    <number>500</number>
+                  </property>
+                  <property name="styleSheet">
+                    <string>
+                      QTableView {
+                        background: white;
+                        border: 1px solid #ddd;
+                        border-radius: 4px;
+                      }
+                    </string>
+                  </property>
+                </widget>
+              </item>
+
+              <!-- Bottom Button Row (Stats + Notifications) -->
+              <item>
+                <layout class="QHBoxLayout">
+                  <!-- Stats Buttons -->
+                  <item>
+                    <widget class="QPushButton" name="showStatusStats">
+                      <property name="text">
+                        <string>Status Stats</string>
+                      </property>
+                      <property name="styleSheet">
+                        <string>
+                          background: #6f42c1;
+                          color: white;
+                          padding: 8px;
+                          border-radius: 4px;
+                        </string>
+                      </property>
+                    </widget>
+                  </item>
+                  <item>
+                    <widget class="QPushButton" name="showDurationStats">
+                      <property name="text">
+                        <string>Duration Stats</string>
+                      </property>
+                      <property name="styleSheet">
+                        <string>
+                          background: #20c997;
+                          color: white;
+                          padding: 8px;
+                          border-radius: 4px;
+                        </string>
+                      </property>
+                    </widget>
+                  </item>
+
+                  <!-- Spacer to push other buttons right -->
+                  <item><spacer name="horizontalSpacer"/></item>
+
+                  <!-- Notification Button -->
+                  <item>
+                    <widget class="QPushButton" name="notificationBtn">
+                      <property name="text">
+                        <string>Check Deadlines</string>
+                      </property>
+                      <property name="objectName">
+                        <string>notificationBtn</string>
+                      </property>
+                      <property name="styleSheet">
+                        <string>
+                          background: #17a2b8;
+                          color: white;
+                          padding: 8px;
+                          border-radius: 4px;
+                        </string>
+                      </property>
+                    </widget>
+                  </item>
+                </layout>
+              </item>
+
+            </layout>
+          </widget>
+        </item>
+
+      </layout>
+    </widget>
+  </widget>
+  <resources/>
+</ui>
