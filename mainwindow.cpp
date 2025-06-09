@@ -189,7 +189,7 @@ void MainWindow::loadProjectsFromDatabase()
         }
     }
 
-    updateCharts();
+
 }
 
 bool MainWindow::saveProjectToDatabase(const QStringList &projectData)
@@ -561,49 +561,57 @@ QChart* MainWindow::createProjectStatusChart() {
     return chart;
 }
 
-QChart* MainWindow::createBudgetChart() {
+QChart* MainWindow::createBudgetChart()
+{
     if (!db.isOpen()) return nullptr;
 
-    // Récupérer les données de budget par client
+    // Requête simple pour récupérer le budget total par client
     QSqlQuery query(db);
-    query.prepare("SELECT client_id, SUM(budget) FROM projects GROUP BY client_id");
+    query.prepare("SELECT client_name, SUM(budget) FROM projects GROUP BY client_name");
 
     if (!query.exec()) {
-        qDebug() << "Error fetching budget data:" << query.lastError().text();
+        qDebug() << "Erreur requête budget:" << query.lastError();
         return nullptr;
     }
 
-    // Créer un diagramme à barres
+    // Préparation des données
     QBarSeries *series = new QBarSeries();
-    QStringList categories;
+    QBarSet *barSet = new QBarSet("Budget");
+
+    QStringList clients;
+    double maxBudget = 0;
 
     while (query.next()) {
-        QBarSet *set = new QBarSet(query.value(0).toString());
-        *set << query.value(1).toDouble();
-        series->append(set);
-        categories << "Client " + query.value(0).toString();
+        QString client = query.value(0).toString();
+        double budget = query.value(1).toDouble();
+
+        clients << client;
+        *barSet << budget;
+
+        if (budget > maxBudget) maxBudget = budget;
     }
 
-    // Configuration du graphique
+    if (clients.isEmpty()) return nullptr;
+
+    // Configuration basique du graphique
     QChart *chart = new QChart();
     chart->addSeries(series);
-    chart->setTitle("Budget by Client");
-    chart->setAnimationOptions(QChart::SeriesAnimations);
+    series->append(barSet);
+    barSet->setColor(QColor(52, 152, 219)); // Couleur bleue simple
 
-    // Axes
+    // Axes simples
     QBarCategoryAxis *axisX = new QBarCategoryAxis();
-    axisX->append(categories);
+    axisX->append(clients);
     chart->addAxis(axisX, Qt::AlignBottom);
     series->attachAxis(axisX);
 
     QValueAxis *axisY = new QValueAxis();
-    axisY->setLabelFormat("$%d");
+    axisY->setRange(0, maxBudget * 1.1);
     chart->addAxis(axisY, Qt::AlignLeft);
     series->attachAxis(axisY);
 
     return chart;
 }
-
 void MainWindow::showProjectStatusStats() {
     QChart *chart = createProjectStatusChart();
     if (!chart) return;
@@ -676,73 +684,31 @@ void MainWindow::sortProjects(int column, Qt::SortOrder order)
 
 
 
-void MainWindow::sendNotificationEmail(const QString &clientEmail,
-                                       const QString &clientName,
-                                       const QString &projectName,
-                                       const QString &projectStatus,
-                                       const QString &projectId)
+void MainWindow::sendNotificationEmail(const QString& clientEmail,
+                                       const QString& clientName,
+                                       const QString& projectName,
+                                       const QString& projectStatus,
+                                       const QString& projectId)
 {
-    if (!networkManager) {
-        qCritical("NetworkManager non initialisé!");
-        QMessageBox::critical(this, "Erreur système",
-                              "Le service de notification n'est pas disponible.");
-        return;
-    }
+    // Sujet et contenu de l'email
+    QString subject = "Mise à jour de votre projet";
+    QString body = QString("Bonjour %1,\n\n"
+                           "Nous souhaitons vous informer que votre projet \"%2\" (ID: %3) est actuellement : %4.\n\n"
+                           "Merci pour votre confiance.\n"
+                           "L'équipe d'administration.")
+                       .arg(clientName, projectName, projectId, projectStatus);
 
-    // Configuration de la requête HTTPS
-    QNetworkRequest request(QUrl("https://api.emailjs.com/api/v1.0/email/send"));
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request.setRawHeader("Accept", "application/json");
+    // Construction de l'URL Gmail
+    QString url = "https://mail.google.com/mail/?view=cm&fs=1"
+                  + QString("&to=%1").arg(QUrl::toPercentEncoding(clientEmail))
+                  + QString("&su=%1").arg(QUrl::toPercentEncoding(subject))
+                  + QString("&body=%1").arg(QUrl::toPercentEncoding(body));
 
-    // Construction du payload JSON conforme à votre DB
-    QJsonObject emailParams {
-                            {"to_email", clientEmail},
-                            {"client_name", clientName},
-                            {"project_name", projectName},
-                            {"project_status", projectStatus},
-                            {"project_id", projectId},
-
-                            };
-
-    QJsonObject payload {
-        {"service_id", "service_errhzkl"},
-        {"template_id", "template_lbmy5mh"},
-        {"user_id", "rIWgGoIZXZOXhd7oF"},
-        {"template_params", emailParams}
-    };
-
-    // Envoi asynchrone avec gestion d'erreur détaillée
-    QNetworkReply* reply = networkManager->post(request, QJsonDocument(payload).toJson());
-
-    connect(reply, &QNetworkReply::finished, [this, reply, clientEmail]() {
-        reply->deleteLater(); // Nettoyage automatique
-
-        if (reply->error() != QNetworkReply::NoError) {
-            qWarning("Erreur réseau: %s", qPrintable(reply->errorString()));
-            QMessageBox::warning(this, "Échec d'envoi",
-                                 QString("Impossible d'envoyer à %1\nErreur: %2")
-                                     .arg(clientEmail)
-                                     .arg(reply->errorString()));
-            return;
-        }
-
-        // Vérification de la réponse JSON
-        QJsonDocument response = QJsonDocument::fromJson(reply->readAll());
-        if (response["status"].toString() != "success") {
-            QMessageBox::warning(this, "Erreur API",
-                                 "L'API a renvoyé une erreur: " + response["message"].toString());
-            return;
-        }
-
-        // Succès - journalisation et feedback
-        qInfo("Notification envoyée à %s pour le projet %s",
-              qPrintable(clientEmail),
-              qPrintable(response["project_id"].toString()));
-
-        QMessageBox::information(this, "Succès",
-                                 "Le client a été notifié avec succès.");
-    });
+    // Ouvrir avec navigateur par défaut
+    QDesktopServices::openUrl(QUrl(url));
 }
+
+
 
 bool MainWindow::validateProjectData(const QList<QLineEdit*>& fields)
 {
