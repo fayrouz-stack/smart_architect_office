@@ -84,7 +84,7 @@ private:
     bool validateProjectData(const QList<QLineEdit*>& fields);
     bool validateRowSelection(bool requireSelection = true);
     QString cleanAmountInput(const QString& amount);
-    void sendNotificationEmail(const QString &clientEmail,
+   void sendNotificationEmail(const QString &clientEmail,
                                const QString &clientName,
                                const QString &projectName,
                                const QString &projectStatus,
